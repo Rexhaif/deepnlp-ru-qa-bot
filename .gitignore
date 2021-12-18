@@ -1,3 +1,7 @@
+# user-specific ignores
+data/*
+!data/download.sh
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
