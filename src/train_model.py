@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     if accelerator.is_local_main_process:
         logger.info(f"Num technical epochs: {num_train_epochs}")
-        logger.info(f"Total Batch Size: {total_batch_size}")
+        logger.info(f"Total Batch Size: batch_size({config.device_batch_size}) * gradient_accumulation({config.gradient_accumulation_steps}) * distributed({accelerator.num_processes}) = {total_batch_size}")
         logger.info(f"Starting training")
         wandb_logger = wandb.init(
             project="deepnlp-ru-qa-bot",
@@ -202,13 +202,14 @@ if __name__ == "__main__":
         if accelerator.is_local_main_process:
             wandb_logger.log({'eval/ppl': perplexity, 'eval/loss': np.mean(losses)}, step=step_i)
             logger.info(f"Epoch: {epoch}, Perplexity: {perplexity:.4f}")
-            accelerator.wait_for_everyone()
-            unwrapped_model = accelerator.unwrap_model(model)
-            accelerator.save(unwrapped_model.state_dict(), config.model_save_path)
-            wandb.save(config.model_save_path)
-            logger.info(f"Saved model")
+            
             
     if accelerator.is_local_main_process:
+        logger.info("Unwrapping and Saving model")
+        unwrapped_model = accelerator.unwrap_model(model)
+        accelerator.save(unwrapped_model.state_dict(), config.model_save_path)
+        wandb.save(config.model_save_path)
+        logger.info(f"Saved model")
         logger.info(f"Training finished")
     
 
