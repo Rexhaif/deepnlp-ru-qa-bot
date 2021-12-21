@@ -3,9 +3,10 @@ import logging
 
 from rich.logging import RichHandler
 from tokenizers import Tokenizer
-from tokenizers.models import BPE
+from tokenizers.models import WordPiece
 from tokenizers.pre_tokenizers import BertPreTokenizer
-from tokenizers.trainers import BpeTrainer
+from tokenizers.trainers import WordPieceTrainer
+from tokenizers.decoders import WordPiece as WordPieceDecoder
 
 logging.basicConfig(
     level="NOTSET",
@@ -23,14 +24,17 @@ def train_tokenizer(args: ap.Namespace):
     vocab_size: int = args.vocab_size
     min_frequency: int = args.min_frequency
 
-    tokenizer = Tokenizer(BPE(unk_token="<UNK>"))
-    trainer = BpeTrainer(
+    tokenizer = Tokenizer(WordPiece(unk_token="<UNK>"))
+    trainer = WordPieceTrainer(
         show_progress=True,
         vocab_size=vocab_size,
         min_frequency=min_frequency,
+        continuing_subword_prefix="##",
         special_tokens=["<PAD>", "<UNK>", "<START>", "<END>", "<CAT>", "<RESP>"],
     )
     tokenizer.pre_tokenizer = BertPreTokenizer()
+    tokenizer.decoder = WordPieceDecoder()
+
 
     logger.info("Begin train tokenzier")
     tokenizer.train([input_file], trainer=trainer)
