@@ -36,3 +36,7 @@ generation:   9%|████████▉                                    
 Type your question$EXIT 
 Have a good day!😀
 ```
+## Pretrained models
+* generative transformer, hidden size = 512, num layers = 12, num heads = 8, max length = 128, trained for 25k steps with 256 batch size
+  * [model.pth](https://www.icloud.com/iclouddrive/0051Wm21rx9_j7RnkpnBWhDYg#model) - should be placed in data/model.pth
+  * [tokenizer.json](https://www.icloud.com/iclouddrive/09fbU5nBp_wlS6kWwpzhdLeWQ#tokenizer) - should be placed in data/tokenizer.json 
